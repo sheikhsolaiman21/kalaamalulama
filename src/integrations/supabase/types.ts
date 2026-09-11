@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       fatawa: {
         Row: {
+          content_type: string
           created_at: string
           id: string
           instagram_url: string
@@ -25,6 +26,7 @@ export type Database = {
           topic_id: string | null
         }
         Insert: {
+          content_type?: string
           created_at?: string
           id?: string
           instagram_url: string
@@ -34,6 +36,7 @@ export type Database = {
           topic_id?: string | null
         }
         Update: {
+          content_type?: string
           created_at?: string
           id?: string
           instagram_url?: string
