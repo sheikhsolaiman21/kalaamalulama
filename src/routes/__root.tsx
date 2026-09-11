@@ -80,11 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fatawa Library — Instagram rulings, organized" },
+      { title: "Ulama Library — Scholar-led knowledge" },
       {
         name: "description",
         content:
-          "A searchable library of Instagram fatawa, sorted by scholar and topic with the original video on every card.",
+          "A searchable library of fatawa, advice, reminders, motivation, and lectures from trusted scholars.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -126,7 +126,7 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
         <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-xl tracking-tight">Fatawa Library</span>
+          <span className="font-display text-xl tracking-tight">Ulama Library</span>
           <span className="hidden text-xs uppercase tracking-[0.18em] text-muted-foreground sm:inline">
             Archive
           </span>
@@ -145,7 +145,7 @@ function SiteHeader() {
             className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             activeProps={{ className: "text-foreground" }}
           >
-            Add fatwa
+            Add knowledge
           </Link>
           <button
             type="button"
@@ -175,8 +175,8 @@ function RootComponent() {
           </main>
           <footer className="border-t border-border py-8">
             <p className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-              An educational archive of publicly posted Instagram fatawa. Always return to a
-              qualified scholar for your specific situation.
+              A curated educational archive of scholar-led knowledge. For personal rulings, always
+              return to a qualified scholar who understands your situation.
             </p>
           </footer>
         </div>
