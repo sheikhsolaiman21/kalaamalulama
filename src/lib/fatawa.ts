@@ -2,6 +2,17 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Scholar = { id: string; name: string; slug: string };
 export type Topic = { id: string; name: string; slug: string };
+export const CONTENT_TYPES = ["fatwa", "advice", "motivation", "reminder", "lecture"] as const;
+export type ContentType = (typeof CONTENT_TYPES)[number];
+
+export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+  fatwa: "Fatwa",
+  advice: "Advice",
+  motivation: "Motivation",
+  reminder: "Reminder",
+  lecture: "Lecture",
+};
+
 export type Fatwa = {
   id: string;
   title: string;
@@ -9,6 +20,7 @@ export type Fatwa = {
   instagram_url: string;
   scholar_id: string | null;
   topic_id: string | null;
+  content_type: ContentType;
   created_at: string;
 };
 
@@ -35,7 +47,7 @@ export const fatawaQuery = {
   queryFn: async (): Promise<Fatwa[]> => {
     const { data, error } = await supabase
       .from("fatawa")
-      .select("id,title,summary_transcript,instagram_url,scholar_id,topic_id,created_at")
+      .select("id,title,summary_transcript,instagram_url,scholar_id,topic_id,content_type,created_at")
       .order("created_at", { ascending: false });
     if (error) throw error;
     return data ?? [];

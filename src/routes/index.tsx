@@ -2,23 +2,33 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { FatwaCard } from "@/components/FatwaCard";
-import { fatawaQuery, scholarsQuery, topicsQuery } from "@/lib/fatawa";
+import {
+  CONTENT_TYPES,
+  CONTENT_TYPE_LABELS,
+  fatawaQuery,
+  scholarsQuery,
+  topicsQuery,
+  type ContentType,
+} from "@/lib/fatawa";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Fatawa Library — Browse Instagram rulings by scholar and topic" },
+      { title: "Ulama Library — Knowledge from trusted scholars" },
       {
         name: "description",
         content:
-          "Search a curated catalog of Instagram fatawa. Filter by scholar or topic, read the transcript summary, and watch the original clip.",
+          "Explore a curated library of fatawa, advice, reminders, motivation, and lectures from trusted scholars.",
       },
-      { property: "og:title", content: "Fatawa Library — Instagram rulings, organized" },
+      { property: "og:title", content: "Ulama Library — Scholar-led knowledge" },
       {
         property: "og:description",
-        content: "Search and filter a curated catalog of Instagram fatawa by scholar and topic.",
+        content: "Search and filter a curated library of scholar-led answers, advice, and reminders.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Catalog,
@@ -34,18 +44,15 @@ function Chip({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
+      variant={active ? "default" : "outline"}
+      size="sm"
       type="button"
       onClick={onClick}
-      className={
-        "rounded-full border px-3 py-1.5 text-sm transition-colors " +
-        (active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground")
-      }
+      className="rounded-full font-normal"
     >
       {label}
-    </button>
+    </Button>
   );
 }
 
@@ -53,6 +60,7 @@ function Catalog() {
   const [search, setSearch] = useState("");
   const [scholarIds, setScholarIds] = useState<string[]>([]);
   const [topicIds, setTopicIds] = useState<string[]>([]);
+  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 
   const { data: fatawa = [], isLoading, error } = useQuery(fatawaQuery);
   const { data: scholars = [] } = useQuery(scholarsQuery);
@@ -69,28 +77,29 @@ function Catalog() {
     return fatawa.filter((f) => {
       if (scholarIds.length && (!f.scholar_id || !scholarIds.includes(f.scholar_id))) return false;
       if (topicIds.length && (!f.topic_id || !topicIds.includes(f.topic_id))) return false;
+      if (contentTypes.length && !contentTypes.includes(f.content_type)) return false;
       if (!q) return true;
       return (
         f.title.toLowerCase().includes(q) ||
         (f.summary_transcript ?? "").toLowerCase().includes(q)
       );
     });
-  }, [fatawa, search, scholarIds, topicIds]);
+  }, [fatawa, search, scholarIds, topicIds, contentTypes]);
 
-  const hasFilters = search || scholarIds.length > 0 || topicIds.length > 0;
+  const hasFilters = search || scholarIds.length > 0 || topicIds.length > 0 || contentTypes.length > 0;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
       <section className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          {fatawa.length} rulings archived
+          Knowledge from the ulama
         </p>
         <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">
-          A quiet, searchable home for Instagram fatawa.
+          Seek knowledge from trusted scholars.
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Every clip is filed under its scholar and topic, with a short transcript summary so you
-          can find the answer before you press play.
+          Explore questions, fatawa, advice, reminders, and lectures—organized by scholar and topic
+          so every answer is easy to return to.
         </p>
       </section>
 
@@ -100,8 +109,8 @@ function Catalog() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search titles and transcripts…"
-            aria-label="Search fatawa"
+            placeholder="Search questions and answers…"
+            aria-label="Search the library"
             className="h-12 w-full rounded-lg border border-input bg-card pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
           />
         </div>
@@ -112,6 +121,12 @@ function Catalog() {
             items={scholars}
             selected={scholarIds}
             onToggle={(id) => toggle(scholarIds, setScholarIds, id)}
+          />
+          <FilterRow
+            label="Type"
+            items={CONTENT_TYPES.map((type) => ({ id: type, name: CONTENT_TYPE_LABELS[type] }))}
+            selected={contentTypes}
+            onToggle={(id) => toggle(contentTypes, setContentTypes as (v: string[]) => void, id)}
           />
           <FilterRow
             label="Topics"
@@ -126,17 +141,20 @@ function Catalog() {
             Showing {filtered.length} of {fatawa.length}
           </p>
           {hasFilters && (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               type="button"
               onClick={() => {
                 setSearch("");
                 setScholarIds([]);
                 setTopicIds([]);
+                setContentTypes([]);
               }}
-              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+              className="text-primary"
             >
               <X className="h-3.5 w-3.5" /> Clear filters
-            </button>
+            </Button>
           )}
         </div>
       </section>
@@ -156,7 +174,7 @@ function Catalog() {
         )}
         {!isLoading && filtered.length === 0 && !error && (
           <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            No fatawa match your filters yet.
+            No entries match your filters yet.
           </p>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

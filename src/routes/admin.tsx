@@ -3,23 +3,35 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { fatawaQuery, scholarsQuery, slugify, toEmbedUrl, topicsQuery } from "@/lib/fatawa";
+import {
+  CONTENT_TYPES,
+  CONTENT_TYPE_LABELS,
+  fatawaQuery,
+  scholarsQuery,
+  slugify,
+  toEmbedUrl,
+  topicsQuery,
+  type ContentType,
+} from "@/lib/fatawa";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Add a fatwa — Fatawa Library" },
+      { title: "Add knowledge — Ulama Library" },
       {
         name: "description",
         content:
-          "Paste an Instagram link, pick the scholar and topic, add a transcript summary, and file it in the library.",
+          "Add a scholar's answer, advice, reminder, motivation, or lecture to the library.",
       },
-      { property: "og:title", content: "Add a fatwa — Fatawa Library" },
+      { property: "og:title", content: "Add knowledge — Ulama Library" },
       {
         property: "og:description",
-        content: "Add new Instagram fatawa to the library with scholar and topic tagging.",
+        content: "Add scholar-led knowledge with a content type, topic, summary, and source.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AdminPage,
@@ -38,6 +50,7 @@ function AdminPage() {
   const [url, setUrl] = useState("");
   const [scholarId, setScholarId] = useState("");
   const [topicId, setTopicId] = useState("");
+  const [contentType, setContentType] = useState<ContentType>("fatwa");
   const [newScholar, setNewScholar] = useState("");
   const [newTopic, setNewTopic] = useState("");
 
@@ -87,6 +100,7 @@ function AdminPage() {
         instagram_url: url.trim(),
         scholar_id: scholarId || null,
         topic_id: topicId || null,
+        content_type: contentType,
       });
       if (error) throw error;
     },
@@ -94,8 +108,9 @@ function AdminPage() {
       setTitle("");
       setSummary("");
       setUrl("");
+      setContentType("fatwa");
       queryClient.invalidateQueries({ queryKey: fatawaQuery.queryKey });
-      toast.success("Fatwa saved to the library");
+      toast.success("Entry saved to the library");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -105,9 +120,9 @@ function AdminPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="text-4xl">Add a fatwa</h1>
+      <h1 className="text-4xl">Add to the library</h1>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-        Paste the Instagram post or reel link, tag it, and it appears in the{" "}
+        Add the scholar, category, question, answer, and source. It appears in the{" "}
         <Link to="/" className="text-primary hover:underline">
           catalog
         </Link>{" "}
@@ -123,21 +138,21 @@ function AdminPage() {
       >
         <div className="space-y-2">
           <label htmlFor="title" className="text-sm font-medium">
-            Title
+            Question or title
           </label>
           <input
             id="title"
             className={fieldClass}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Combining prayers while travelling"
+             placeholder="Can I combine prayers while travelling?"
             required
           />
         </div>
 
         <div className="space-y-2">
           <label htmlFor="url" className="text-sm font-medium">
-            Instagram link
+            Video source link
           </label>
           <input
             id="url"
@@ -149,12 +164,25 @@ function AdminPage() {
           />
           {!urlValid && (
             <p className="text-xs text-destructive">
-              That doesn&apos;t look like an Instagram post or reel link.
+              That doesn&apos;t look like a supported post or reel link.
             </p>
           )}
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-3">
+          <div className="space-y-2">
+            <label htmlFor="content-type" className="text-sm font-medium">Category</label>
+            <select
+              id="content-type"
+              className={fieldClass}
+              value={contentType}
+              onChange={(event) => setContentType(event.target.value as ContentType)}
+            >
+              {CONTENT_TYPES.map((type) => (
+                <option key={type} value={type}>{CONTENT_TYPE_LABELS[type]}</option>
+              ))}
+            </select>
+          </div>
           <PickerField
             label="Scholar"
             value={scholarId}
@@ -181,7 +209,7 @@ function AdminPage() {
 
         <div className="space-y-2">
           <label htmlFor="summary" className="text-sm font-medium">
-            Transcript summary
+            Answer or summary
           </label>
           <textarea
             id="summary"
@@ -189,18 +217,18 @@ function AdminPage() {
             className="w-full rounded-lg border border-input bg-card p-3 text-sm leading-relaxed outline-none transition-colors focus:border-primary"
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
-            placeholder="A few sentences capturing the ruling and its conditions…"
+            placeholder="A concise written answer, lesson, or summary…"
           />
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={!canSave}
-          className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="h-11 px-6"
         >
           {saveFatwa.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           Save to library
-        </button>
+        </Button>
       </form>
     </div>
   );
@@ -250,14 +278,16 @@ function PickerField({
           onChange={(e) => onNewValue(e.target.value)}
           placeholder={addLabel}
         />
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           type="button"
           onClick={onAdd}
           disabled={adding || !newValue.trim()}
-          className="h-9 shrink-0 rounded-md border border-border px-3 text-sm transition-colors hover:bg-secondary disabled:opacity-40"
+          className="shrink-0"
         >
           Add
-        </button>
+        </Button>
       </div>
     </div>
   );
