@@ -8,8 +8,8 @@ export function FatwaCard({
   topic,
 }: {
   fatwa: Fatwa;
-  scholar?: Scholar;
-  topic?: Topic;
+  scholar?: Scholar | undefined;
+  topic?: Topic | undefined;
 }) {
   const [playing, setPlaying] = useState(false);
   const embed = toEmbedUrl(fatwa.instagram_url);
