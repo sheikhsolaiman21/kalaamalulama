@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fatawa: {
+        Row: {
+          created_at: string
+          id: string
+          instagram_url: string
+          scholar_id: string | null
+          summary_transcript: string | null
+          title: string
+          topic_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instagram_url: string
+          scholar_id?: string | null
+          summary_transcript?: string | null
+          title: string
+          topic_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instagram_url?: string
+          scholar_id?: string | null
+          summary_transcript?: string | null
+          title?: string
+          topic_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fatawa_scholar_id_fkey"
+            columns: ["scholar_id"]
+            isOneToOne: false
+            referencedRelation: "scholars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fatawa_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholars: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      topics: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
