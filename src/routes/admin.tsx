@@ -159,7 +159,7 @@ function AdminPage() {
             className={fieldClass}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.instagram.com/reel/…"
+            placeholder="https://www.example.com/video/…"
             required
           />
           {!urlValid && (

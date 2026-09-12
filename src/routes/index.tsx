@@ -69,7 +69,7 @@ function Catalog() {
   const scholarById = useMemo(() => new Map(scholars.map((s) => [s.id, s])), [scholars]);
   const topicById = useMemo(() => new Map(topics.map((t) => [t.id, t])), [topics]);
 
-  const toggle = (list: string[], set: (v: string[]) => void, id: string) =>
+  const toggle = <T extends string>(list: T[], set: (v: T[]) => void, id: T) =>
     set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
   const filtered = useMemo(() => {
@@ -126,7 +126,7 @@ function Catalog() {
             label="Type"
             items={CONTENT_TYPES.map((type) => ({ id: type, name: CONTENT_TYPE_LABELS[type] }))}
             selected={contentTypes}
-            onToggle={(id) => toggle(contentTypes, setContentTypes as (v: string[]) => void, id)}
+            onToggle={(id) => toggle(contentTypes, setContentTypes, id as ContentType)}
           />
           <FilterRow
             label="Topics"
