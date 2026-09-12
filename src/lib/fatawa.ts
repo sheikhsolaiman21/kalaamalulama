@@ -50,7 +50,12 @@ export const fatawaQuery = {
       .select("id,title,summary_transcript,instagram_url,scholar_id,topic_id,content_type,created_at")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data ?? [];
+    return (data ?? []).map((item) => ({
+      ...item,
+      content_type: CONTENT_TYPES.includes(item.content_type as ContentType)
+        ? (item.content_type as ContentType)
+        : "fatwa",
+    }));
   },
 };
 
