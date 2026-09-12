@@ -49,7 +49,7 @@ function Chip({
       size="sm"
       type="button"
       onClick={onClick}
-      className="rounded-full font-normal"
+      className={`rounded-full font-normal ${active ? "border-gold bg-gold text-gold-foreground hover:bg-gold/90" : ""}`}
     >
       {label}
     </Button>
@@ -91,7 +91,7 @@ function Catalog() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
       <section className="max-w-2xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        <p className="font-script text-xl text-gold">
           Knowledge from the ulama
         </p>
         <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">
@@ -103,7 +103,7 @@ function Catalog() {
         </p>
       </section>
 
-      <section className="mt-10 space-y-5">
+      <section className="sticky top-16 z-30 -mx-3 mt-10 space-y-5 rounded-lg border border-border bg-surface/95 p-4 shadow-xl backdrop-blur-xl sm:p-5">
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -111,7 +111,7 @@ function Catalog() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search questions and answers…"
             aria-label="Search the library"
-            className="h-12 w-full rounded-lg border border-input bg-card pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+            className="h-12 w-full rounded-lg border border-gold/45 bg-card pl-11 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-gold focus:shadow-gold-focus"
           />
         </div>
 
@@ -142,7 +142,7 @@ function Catalog() {
           </p>
           {hasFilters && (
             <Button
-              variant="ghost"
+              variant="link"
               size="sm"
               type="button"
               onClick={() => {
@@ -151,15 +151,15 @@ function Catalog() {
                 setTopicIds([]);
                 setContentTypes([]);
               }}
-              className="text-primary"
+              className="font-script text-lg text-gold"
             >
-              <X className="h-3.5 w-3.5" /> Clear filters
+              <X className="h-3.5 w-3.5" /> Clear All Filters
             </Button>
           )}
         </div>
       </section>
 
-      <section className="mt-8">
+      <section className="mt-10">
         {error && (
           <p className="rounded-lg border border-border bg-card p-6 text-sm text-destructive">
             Could not load the library. Please refresh and try again.
