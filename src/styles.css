@@ -18,8 +18,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Lora", ui-serif, Georgia, serif;
+  --font-script: "Cormorant Garamond", ui-serif, Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -41,6 +42,10 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
   --color-surface: var(--surface);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-sepia: var(--sepia);
+  --color-overlay: var(--overlay);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -59,15 +64,19 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --surface: oklch(0.981 0.002 250);
-  --foreground: oklch(0.17 0.006 250);
+  --background: oklch(0.97 0.008 82);
+  --surface: oklch(0.94 0.012 76);
+  --foreground: oklch(0.21 0.016 63);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.17 0.006 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.17 0.006 250);
-  --primary: oklch(0.54 0.16 261);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: oklch(0.53 0.105 78);
+  --primary-foreground: oklch(0.98 0.008 84);
+  --gold: oklch(0.67 0.12 78);
+  --gold-foreground: oklch(0.18 0.012 70);
+  --sepia: oklch(0.86 0.045 74);
+  --overlay: oklch(0.08 0.008 62 / 82%);
   --secondary: oklch(0.965 0.003 250);
   --secondary-foreground: oklch(0.24 0.007 250);
   --muted: oklch(0.965 0.003 250);
@@ -95,21 +104,25 @@
 }
 
 .dark {
-  --background: oklch(0.155 0.006 260);
-  --surface: oklch(0.185 0.007 260);
-  --foreground: oklch(0.965 0.003 250);
-  --card: oklch(0.195 0.008 260);
-  --card-foreground: oklch(0.965 0.003 250);
-  --popover: oklch(0.195 0.008 260);
-  --popover-foreground: oklch(0.965 0.003 250);
-  --primary: oklch(0.68 0.14 261);
-  --primary-foreground: oklch(0.16 0.01 260);
-  --secondary: oklch(0.245 0.009 260);
-  --secondary-foreground: oklch(0.965 0.003 250);
-  --muted: oklch(0.245 0.009 260);
-  --muted-foreground: oklch(0.68 0.012 255);
-  --accent: oklch(0.29 0.035 261);
-  --accent-foreground: oklch(0.85 0.08 261);
+  --background: oklch(0.145 0.008 60);
+  --surface: oklch(0.19 0.01 62);
+  --foreground: oklch(0.92 0.018 84);
+  --card: oklch(0.205 0.012 62);
+  --card-foreground: oklch(0.92 0.018 84);
+  --popover: oklch(0.18 0.012 62);
+  --popover-foreground: oklch(0.92 0.018 84);
+  --primary: oklch(0.72 0.12 78);
+  --primary-foreground: oklch(0.16 0.012 62);
+  --secondary: oklch(0.255 0.012 62);
+  --secondary-foreground: oklch(0.92 0.018 84);
+  --muted: oklch(0.25 0.012 62);
+  --muted-foreground: oklch(0.69 0.02 79);
+  --accent: oklch(0.31 0.045 72);
+  --accent-foreground: oklch(0.91 0.055 82);
+  --gold: oklch(0.76 0.13 79);
+  --gold-foreground: oklch(0.16 0.012 62);
+  --sepia: oklch(0.32 0.045 64);
+  --overlay: oklch(0.065 0.006 55 / 86%);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.99 0 0);
   --border: oklch(1 0 0 / 12%);
@@ -135,6 +148,10 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(30deg, color-mix(in oklab, var(--border) 24%, transparent) 12%, transparent 12.5%, transparent 87%, color-mix(in oklab, var(--border) 24%, transparent) 87.5%),
+      linear-gradient(150deg, color-mix(in oklab, var(--border) 18%, transparent) 12%, transparent 12.5%, transparent 87%, color-mix(in oklab, var(--border) 18%, transparent) 87.5%);
+    background-size: 48px 84px;
   }
 
   h1,
@@ -142,8 +159,21 @@
   h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
+}
+
+@utility font-script {
+  font-family: var(--font-script);
+  font-style: italic;
+}
+
+@utility title-amber-glow {
+  text-shadow: 0 0 22px color-mix(in oklab, var(--gold) 52%, transparent);
+}
+
+@utility shadow-gold-focus {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--gold) 42%, transparent), 0 0 24px color-mix(in oklab, var(--gold) 16%, transparent);
 }
 
 @utility hairline-grid {
