@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  CONTENT_TYPE_LABELS,
+  contentTypeLabel,
   toEmbedUrl,
   type Fatwa,
   type Scholar,
@@ -26,7 +26,8 @@ export function FatwaCard({
   topic?: Topic | undefined;
 }) {
   const embed = toEmbedUrl(fatwa.instagram_url);
-  const typeLabel = CONTENT_TYPE_LABELS[fatwa.content_type];
+  const typeLabel = contentTypeLabel(fatwa.content_type);
+
   const [saved, setSaved] = useState(false);
   const isFeatured = fatwa.title.toLowerCase().includes("combining prayers while travelling");
 
