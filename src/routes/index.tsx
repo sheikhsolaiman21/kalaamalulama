@@ -103,8 +103,9 @@ function Catalog() {
         </p>
       </section>
 
-      <section className="sticky top-16 z-30 -mx-3 mt-10 space-y-5 rounded-lg border border-border bg-surface/95 p-4 shadow-xl backdrop-blur-xl sm:p-5">
-        <div className="relative">
+      <>
+        <div className="sticky top-20 z-30 -mx-1 mt-10 rounded-lg bg-surface/95 p-1 shadow-lg backdrop-blur-xl">
+          <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={search}
@@ -113,8 +114,10 @@ function Catalog() {
             aria-label="Search the library"
             className="h-12 w-full rounded-lg border border-gold/45 bg-card pl-11 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-gold focus:shadow-gold-focus"
           />
+          </div>
         </div>
 
+      <section className="-mx-3 mt-4 space-y-5 rounded-lg border border-border bg-surface/95 p-4 shadow-xl sm:p-5">
         <div className="space-y-3">
           <FilterRow
             label="Scholars"
@@ -158,6 +161,7 @@ function Catalog() {
           )}
         </div>
       </section>
+      </>
 
       <section className="mt-10">
         {error && (
