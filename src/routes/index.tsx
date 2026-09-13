@@ -5,14 +5,13 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FatwaCard } from "@/components/FatwaCard";
 import {
-  categoriesQuery,
-  contentTypeLabel,
+  CONTENT_TYPES,
+  CONTENT_TYPE_LABELS,
   fatawaQuery,
   scholarsQuery,
   topicsQuery,
   type ContentType,
 } from "@/lib/fatawa";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,14 +65,6 @@ function Catalog() {
   const { data: fatawa = [], isLoading, error } = useQuery(fatawaQuery);
   const { data: scholars = [] } = useQuery(scholarsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
-  const { data: categories = [] } = useQuery(categoriesQuery);
-
-  const typeOptions = useMemo(() => {
-    const map = new Map(categories.map((c) => [c.slug, c.name] as const));
-    for (const f of fatawa) if (!map.has(f.content_type)) map.set(f.content_type, contentTypeLabel(f.content_type));
-    return [...map].map(([id, name]) => ({ id, name }));
-  }, [categories, fatawa]);
-
 
   const scholarById = useMemo(() => new Map(scholars.map((s) => [s.id, s])), [scholars]);
   const topicById = useMemo(() => new Map(topics.map((t) => [t.id, t])), [topics]);
