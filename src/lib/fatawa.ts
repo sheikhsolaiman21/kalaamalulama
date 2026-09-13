@@ -2,16 +2,25 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Scholar = { id: string; name: string; slug: string };
 export type Topic = { id: string; name: string; slug: string };
+export type Category = { id: string; name: string; slug: string };
 export const CONTENT_TYPES = ["fatwa", "advice", "motivation", "reminder", "lecture"] as const;
-export type ContentType = (typeof CONTENT_TYPES)[number];
+export type ContentType = string;
 
-export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+export const CONTENT_TYPE_LABELS: Record<string, string> = {
   fatwa: "Fatwa",
   advice: "Advice",
   motivation: "Motivation",
   reminder: "Reminder",
   lecture: "Lecture",
 };
+
+/** Human label for any category slug, including ones added later. */
+export function contentTypeLabel(slug: string): string {
+  return (
+    CONTENT_TYPE_LABELS[slug] ??
+    slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
 
 export type Fatwa = {
   id: string;
@@ -23,6 +32,16 @@ export type Fatwa = {
   content_type: ContentType;
   created_at: string;
 };
+
+export const categoriesQuery = {
+  queryKey: ["categories"],
+  queryFn: async (): Promise<Category[]> => {
+    const { data, error } = await supabase.from("categories").select("id,name,slug").order("created_at");
+    if (error) throw error;
+    return data ?? [];
+  },
+};
+
 
 export const scholarsQuery = {
   queryKey: ["scholars"],
