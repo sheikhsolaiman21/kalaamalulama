@@ -64,18 +64,18 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.97 0.008 82);
-  --surface: oklch(0.94 0.012 76);
-  --foreground: oklch(0.21 0.016 63);
+  --background: oklch(0.975 0.003 250);
+  --surface: oklch(0.95 0.005 245);
+  --foreground: oklch(0.21 0.006 250);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.17 0.006 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.17 0.006 250);
   --primary: oklch(0.53 0.105 78);
   --primary-foreground: oklch(0.98 0.008 84);
-  --gold: oklch(0.67 0.12 78);
+  --gold: oklch(0.62 0.09 78);
   --gold-foreground: oklch(0.18 0.012 70);
-  --sepia: oklch(0.86 0.045 74);
+  --sepia: oklch(0.87 0.025 70);
   --overlay: oklch(0.08 0.008 62 / 82%);
   --secondary: oklch(0.965 0.003 250);
   --secondary-foreground: oklch(0.24 0.007 250);
@@ -104,24 +104,24 @@
 }
 
 .dark {
-  --background: oklch(0.145 0.008 60);
-  --surface: oklch(0.19 0.01 62);
-  --foreground: oklch(0.92 0.018 84);
-  --card: oklch(0.205 0.012 62);
-  --card-foreground: oklch(0.92 0.018 84);
-  --popover: oklch(0.18 0.012 62);
-  --popover-foreground: oklch(0.92 0.018 84);
-  --primary: oklch(0.72 0.12 78);
+  --background: oklch(0.14 0.004 260);
+  --surface: oklch(0.19 0.005 255);
+  --foreground: oklch(0.92 0.008 80);
+  --card: oklch(0.205 0.006 255);
+  --card-foreground: oklch(0.92 0.008 80);
+  --popover: oklch(0.18 0.006 255);
+  --popover-foreground: oklch(0.92 0.008 80);
+  --primary: oklch(0.7 0.09 78);
   --primary-foreground: oklch(0.16 0.012 62);
-  --secondary: oklch(0.255 0.012 62);
-  --secondary-foreground: oklch(0.92 0.018 84);
-  --muted: oklch(0.25 0.012 62);
-  --muted-foreground: oklch(0.69 0.02 79);
-  --accent: oklch(0.31 0.045 72);
-  --accent-foreground: oklch(0.91 0.055 82);
-  --gold: oklch(0.76 0.13 79);
+  --secondary: oklch(0.25 0.007 255);
+  --secondary-foreground: oklch(0.92 0.008 80);
+  --muted: oklch(0.25 0.007 255);
+  --muted-foreground: oklch(0.7 0.01 80);
+  --accent: oklch(0.29 0.025 70);
+  --accent-foreground: oklch(0.9 0.025 80);
+  --gold: oklch(0.73 0.095 78);
   --gold-foreground: oklch(0.16 0.012 62);
-  --sepia: oklch(0.32 0.045 64);
+  --sepia: oklch(0.3 0.025 60);
   --overlay: oklch(0.065 0.006 55 / 86%);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.99 0 0);

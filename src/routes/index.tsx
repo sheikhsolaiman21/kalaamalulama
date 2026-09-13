@@ -103,8 +103,8 @@ function Catalog() {
         </p>
       </section>
 
-      <section className="sticky top-16 z-30 -mx-3 mt-10 space-y-5 rounded-lg border border-border bg-surface/95 p-4 shadow-xl backdrop-blur-xl sm:p-5">
-        <div className="relative">
+      <section className="-mx-3 mt-10 space-y-5 rounded-lg border border-border bg-surface/95 p-4 shadow-xl sm:p-5">
+        <div className="sticky top-20 z-30 -mx-1 rounded-lg bg-surface/95 p-1 shadow-lg backdrop-blur-xl">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={search}
