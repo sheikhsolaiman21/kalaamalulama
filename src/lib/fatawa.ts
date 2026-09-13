@@ -71,12 +71,11 @@ export const fatawaQuery = {
     if (error) throw error;
     return (data ?? []).map((item) => ({
       ...item,
-      content_type: CONTENT_TYPES.includes(item.content_type as ContentType)
-        ? (item.content_type as ContentType)
-        : "fatwa",
+      content_type: item.content_type || "fatwa",
     }));
   },
 };
+
 
 /** Turns any Instagram post/reel link into its embeddable player URL. */
 export function toEmbedUrl(url: string): string | null {
