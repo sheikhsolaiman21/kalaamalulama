@@ -12,8 +12,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem("fatawa-theme") as Theme | null;
-    const initial =
-      stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const initial = stored ?? "dark";
     setTheme(initial);
   }, []);
 
