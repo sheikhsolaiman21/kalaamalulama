@@ -140,13 +140,23 @@ function SiteHeader() {
           >
             Catalog
           </Link>
-          <Link
-            to="/admin"
-            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            activeProps={{ className: "text-foreground" }}
-          >
-            Add knowledge
-          </Link>
+          {session ? (
+            <Link
+              to="/admin"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Add knowledge
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Sign in
+            </Link>
+          )}
           <button
             type="button"
             onClick={toggle}
