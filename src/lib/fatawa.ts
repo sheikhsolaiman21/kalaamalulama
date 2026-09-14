@@ -2,16 +2,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Scholar = { id: string; name: string; slug: string };
 export type Topic = { id: string; name: string; slug: string };
-export const CONTENT_TYPES = ["fatwa", "advice", "motivation", "reminder", "lecture"] as const;
-export type ContentType = (typeof CONTENT_TYPES)[number];
+export type Category = { id: string; name: string; slug: string };
 
-export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
-  fatwa: "Fatwa",
-  advice: "Advice",
-  motivation: "Motivation",
-  reminder: "Reminder",
-  lecture: "Lecture",
-};
+/** Slug of a category, e.g. "fatwa" or a custom one the admin created. */
+export type ContentType = string;
 
 export type Fatwa = {
   id: string;
@@ -42,6 +36,22 @@ export const topicsQuery = {
   },
 };
 
+export const categoriesQuery = {
+  queryKey: ["categories"],
+  queryFn: async (): Promise<Category[]> => {
+    const { data, error } = await supabase.from("categories").select("id,name,slug").order("name");
+    if (error) throw error;
+    return data ?? [];
+  },
+};
+
+/** Human label for a category slug, falling back to a prettified slug. */
+export function categoryLabel(slug: string, categories: Category[]): string {
+  const found = categories.find((c) => c.slug === slug);
+  if (found) return found.name;
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
 export const fatawaQuery = {
   queryKey: ["fatawa"],
   queryFn: async (): Promise<Fatwa[]> => {
@@ -50,16 +60,11 @@ export const fatawaQuery = {
       .select("id,title,summary_transcript,instagram_url,scholar_id,topic_id,content_type,created_at")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return (data ?? []).map((item) => ({
-      ...item,
-      content_type: CONTENT_TYPES.includes(item.content_type as ContentType)
-        ? (item.content_type as ContentType)
-        : "fatwa",
-    }));
+    return data ?? [];
   },
 };
 
-/** Turns any Instagram post/reel link into its embeddable player URL. */
+/** Turns any post/reel link into its embeddable player URL. */
 export function toEmbedUrl(url: string): string | null {
   try {
     const parsed = new URL(url.trim());
