@@ -1,16 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FatwaCard } from "@/components/FatwaCard";
 import {
-  CONTENT_TYPES,
-  CONTENT_TYPE_LABELS,
+  categoriesQuery,
+  categoryLabel,
   fatawaQuery,
   scholarsQuery,
   topicsQuery,
-  type ContentType,
 } from "@/lib/fatawa";
 
 export const Route = createFileRoute("/")({
@@ -60,11 +59,29 @@ function Catalog() {
   const [search, setSearch] = useState("");
   const [scholarIds, setScholarIds] = useState<string[]>([]);
   const [topicIds, setTopicIds] = useState<string[]>([]);
-  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+  const [contentTypes, setContentTypes] = useState<string[]>([]);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing = target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        searchRef.current?.blur();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const { data: fatawa = [], isLoading, error } = useQuery(fatawaQuery);
   const { data: scholars = [] } = useQuery(scholarsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
+  const { data: categories = [] } = useQuery(categoriesQuery);
 
   const scholarById = useMemo(() => new Map(scholars.map((s) => [s.id, s])), [scholars]);
   const topicById = useMemo(() => new Map(topics.map((t) => [t.id, t])), [topics]);
@@ -110,10 +127,14 @@ function Catalog() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            ref={searchRef}
             placeholder="Search questions and answers…"
             aria-label="Search the library"
-            className="h-12 w-full rounded-lg border border-gold/45 bg-card pl-11 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-gold focus:shadow-gold-focus"
+            className="h-12 w-full rounded-lg border border-gold/45 bg-card pl-11 pr-16 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-gold focus:shadow-gold-focus"
           />
+          <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-border px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground sm:block">
+            /
+          </kbd>
           </div>
         </div>
 
@@ -127,9 +148,9 @@ function Catalog() {
           />
           <FilterRow
             label="Type"
-            items={CONTENT_TYPES.map((type) => ({ id: type, name: CONTENT_TYPE_LABELS[type] }))}
+            items={categories.map((c) => ({ id: c.slug, name: c.name }))}
             selected={contentTypes}
-            onToggle={(id) => toggle(contentTypes, setContentTypes, id as ContentType)}
+            onToggle={(id) => toggle(contentTypes, setContentTypes, id)}
           />
           <FilterRow
             label="Topics"
@@ -182,13 +203,20 @@ function Catalog() {
           </p>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((f) => (
+          {filtered.map((f, i) => (
+            <div
+              key={f.id}
+              className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500"
+              style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}
+            >
             <FatwaCard
               key={f.id}
               fatwa={f}
               scholar={f.scholar_id ? scholarById.get(f.scholar_id) : undefined}
               topic={f.topic_id ? topicById.get(f.topic_id) : undefined}
+              typeLabel={categoryLabel(f.content_type, categories)}
             />
+            </div>
           ))}
         </div>
       </section>

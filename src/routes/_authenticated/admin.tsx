@@ -1,22 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  CONTENT_TYPES,
-  CONTENT_TYPE_LABELS,
+  categoriesQuery,
   fatawaQuery,
   scholarsQuery,
   slugify,
   toEmbedUrl,
   topicsQuery,
-  type ContentType,
 } from "@/lib/fatawa";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Add knowledge — Ulama Library" },
@@ -28,7 +26,7 @@ export const Route = createFileRoute("/admin")({
       { property: "og:title", content: "Add knowledge — Ulama Library" },
       {
         property: "og:description",
-        content: "Add scholar-led knowledge with a content type, topic, summary, and source.",
+        content: "Add scholar-led knowledge with a category, topic, summary, and source.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -38,21 +36,29 @@ export const Route = createFileRoute("/admin")({
 });
 
 const fieldClass =
-  "h-11 w-full rounded-lg border border-input bg-card px-3 text-sm outline-none transition-colors focus:border-primary";
+  "h-11 w-full rounded-lg border border-input bg-card px-3 text-sm outline-none transition-all focus:border-gold focus:shadow-gold-focus";
 
 function AdminPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: scholars = [] } = useQuery(scholarsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
+  const { data: categories = [] } = useQuery(categoriesQuery);
 
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [url, setUrl] = useState("");
   const [scholarId, setScholarId] = useState("");
   const [topicId, setTopicId] = useState("");
-  const [contentType, setContentType] = useState<ContentType>("fatwa");
+  const [contentType, setContentType] = useState("fatwa");
   const [newScholar, setNewScholar] = useState("");
   const [newTopic, setNewTopic] = useState("");
+  const [newCategory, setNewCategory] = useState("");
+
+  // Make sure the curator account holds the admin role before writing.
+  useEffect(() => {
+    supabase.rpc("claim_admin");
+  }, []);
 
   const addScholar = useMutation({
     mutationFn: async (name: string) => {
@@ -92,6 +98,25 @@ function AdminPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const addCategory = useMutation({
+    mutationFn: async (name: string) => {
+      const { data, error } = await supabase
+        .from("categories")
+        .insert({ name: name.trim(), slug: slugify(name) })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      setNewCategory("");
+      setContentType(data.slug);
+      queryClient.invalidateQueries({ queryKey: categoriesQuery.queryKey });
+      toast.success("Category added");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const saveFatwa = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("fatawa").insert({
@@ -108,25 +133,39 @@ function AdminPage() {
       setTitle("");
       setSummary("");
       setUrl("");
-      setContentType("fatwa");
       queryClient.invalidateQueries({ queryKey: fatawaQuery.queryKey });
       toast.success("Entry saved to the library");
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  };
+
   const urlValid = !url || Boolean(toEmbedUrl(url));
   const canSave = title.trim() && url.trim() && urlValid && !saveFatwa.isPending;
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="text-4xl">Add to the library</h1>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-script text-xl text-gold">Curator desk</p>
+          <h1 className="mt-2 text-4xl">Add to the library</h1>
+        </div>
+        <Button variant="outline" size="sm" onClick={signOut} className="shrink-0">
+          <LogOut className="h-4 w-4" /> Sign out
+        </Button>
+      </div>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         Add the scholar, category, question, answer, and source. It appears in the{" "}
-        <Link to="/" className="text-primary hover:underline">
+        <Link to="/" className="text-gold hover:underline">
           catalog
         </Link>{" "}
-        immediately. This page is open to anyone right now.
+        immediately.
       </p>
 
       <form
@@ -145,7 +184,7 @@ function AdminPage() {
             className={fieldClass}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-             placeholder="Can I combine prayers while travelling?"
+            placeholder="Can I combine prayers while travelling?"
             required
           />
         </div>
@@ -170,19 +209,18 @@ function AdminPage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-3">
-          <div className="space-y-2">
-            <label htmlFor="content-type" className="text-sm font-medium">Category</label>
-            <select
-              id="content-type"
-              className={fieldClass}
-              value={contentType}
-              onChange={(event) => setContentType(event.target.value as ContentType)}
-            >
-              {CONTENT_TYPES.map((type) => (
-                <option key={type} value={type}>{CONTENT_TYPE_LABELS[type]}</option>
-              ))}
-            </select>
-          </div>
+          <PickerField
+            label="Category"
+            value={contentType}
+            onChange={setContentType}
+            options={categories.map((c) => ({ id: c.slug, name: c.name }))}
+            allowEmpty={false}
+            newValue={newCategory}
+            onNewValue={setNewCategory}
+            onAdd={() => newCategory.trim() && addCategory.mutate(newCategory)}
+            adding={addCategory.isPending}
+            addLabel="New category name"
+          />
           <PickerField
             label="Scholar"
             value={scholarId}
@@ -214,18 +252,14 @@ function AdminPage() {
           <textarea
             id="summary"
             rows={6}
-            className="w-full rounded-lg border border-input bg-card p-3 text-sm leading-relaxed outline-none transition-colors focus:border-primary"
+            className="w-full rounded-lg border border-input bg-card p-3 text-sm leading-relaxed outline-none transition-all focus:border-gold focus:shadow-gold-focus"
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             placeholder="A concise written answer, lesson, or summary…"
           />
         </div>
 
-        <Button
-          type="submit"
-          disabled={!canSave}
-          className="h-11 px-6"
-        >
+        <Button type="submit" disabled={!canSave} className="h-11 px-6">
           {saveFatwa.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           Save to library
         </Button>
@@ -244,6 +278,7 @@ function PickerField({
   onAdd,
   adding,
   addLabel,
+  allowEmpty = true,
 }: {
   label: string;
   value: string;
@@ -254,6 +289,7 @@ function PickerField({
   onAdd: () => void;
   adding: boolean;
   addLabel: string;
+  allowEmpty?: boolean;
 }) {
   return (
     <div className="space-y-2">
@@ -264,7 +300,7 @@ function PickerField({
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
       >
-        <option value="">Not specified</option>
+        {allowEmpty && <option value="">Not specified</option>}
         {options.map((o) => (
           <option key={o.id} value={o.id}>
             {o.name}
@@ -273,7 +309,7 @@ function PickerField({
       </select>
       <div className="flex gap-2">
         <input
-          className="h-9 flex-1 rounded-md border border-input bg-card px-3 text-sm outline-none focus:border-primary"
+          className="h-9 flex-1 rounded-md border border-input bg-card px-3 text-sm outline-none focus:border-gold"
           value={newValue}
           onChange={(e) => onNewValue(e.target.value)}
           placeholder={addLabel}

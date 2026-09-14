@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider, useTheme } from "../lib/theme";
+import { useSession } from "../lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -122,6 +123,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function SiteHeader() {
   const { theme, toggle } = useTheme();
+  const { session } = useSession();
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
@@ -140,13 +142,23 @@ function SiteHeader() {
           >
             Catalog
           </Link>
-          <Link
-            to="/admin"
-            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            activeProps={{ className: "text-foreground" }}
-          >
-            Add knowledge
-          </Link>
+          {session ? (
+            <Link
+              to="/admin"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Add knowledge
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Sign in
+            </Link>
+          )}
           <button
             type="button"
             onClick={toggle}
