@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -40,31 +40,31 @@ export type Database = {
           content_type: string
           created_at: string
           id: string
-          instagram_url: string
           scholar_id: string | null
           summary_transcript: string | null
           title: string
           topic_id: string | null
+          video_url: string
         }
         Insert: {
           content_type?: string
           created_at?: string
           id?: string
-          instagram_url: string
           scholar_id?: string | null
           summary_transcript?: string | null
           title: string
           topic_id?: string | null
+          video_url: string
         }
         Update: {
           content_type?: string
           created_at?: string
           id?: string
-          instagram_url?: string
           scholar_id?: string | null
           summary_transcript?: string | null
           title?: string
           topic_id?: string | null
+          video_url?: string
         }
         Relationships: [
           {
@@ -101,6 +101,54 @@ export type Database = {
           id?: string
           name?: string
           slug?: string
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          category_slug: string | null
+          created_at: string
+          id: string
+          note: string | null
+          scholar_name: string | null
+          status: string
+          submitter_email: string | null
+          submitter_name: string | null
+          summary_transcript: string | null
+          title: string
+          topic_name: string | null
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          category_slug?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          scholar_name?: string | null
+          status?: string
+          submitter_email?: string | null
+          submitter_name?: string | null
+          summary_transcript?: string | null
+          title: string
+          topic_name?: string | null
+          updated_at?: string
+          video_url: string
+        }
+        Update: {
+          category_slug?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          scholar_name?: string | null
+          status?: string
+          submitter_email?: string | null
+          submitter_name?: string | null
+          summary_transcript?: string | null
+          title?: string
+          topic_name?: string | null
+          updated_at?: string
+          video_url?: string
         }
         Relationships: []
       }
