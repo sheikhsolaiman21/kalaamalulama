@@ -11,10 +11,6 @@ export function useSession() {
       setSession(next);
       setLoading(false);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
     return () => sub.subscription.unsubscribe();
   }, []);
 
