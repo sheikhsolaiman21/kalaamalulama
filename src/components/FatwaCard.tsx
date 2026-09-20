@@ -26,7 +26,7 @@ export function FatwaCard({
   topic?: Topic | undefined;
   typeLabel: string;
 }) {
-  const embed = toEmbedUrl(fatwa.instagram_url);
+  const embed = toEmbedUrl(fatwa.video_url);
   const [saved, setSaved] = useState(false);
   const isFeatured = fatwa.title.toLowerCase().includes("combining prayers while travelling");
 
@@ -110,7 +110,7 @@ export function FatwaCard({
               </p>
             </div>
             <a
-              href={fatwa.instagram_url}
+              href={fatwa.video_url}
               target="_blank"
               rel="noreferrer"
               className="mt-auto inline-flex items-center gap-1.5 pt-8 text-sm font-medium text-primary hover:underline"

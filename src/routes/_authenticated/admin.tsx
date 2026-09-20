@@ -10,7 +10,7 @@ import {
   fatawaQuery,
   scholarsQuery,
   slugify,
-  toEmbedUrl,
+  isValidUrl,
   topicsQuery,
 } from "@/lib/fatawa";
 
@@ -122,7 +122,7 @@ function AdminPage() {
       const { error } = await supabase.from("fatawa").insert({
         title: title.trim(),
         summary_transcript: summary.trim() || null,
-        instagram_url: url.trim(),
+        video_url: url.trim(),
         scholar_id: scholarId || null,
         topic_id: topicId || null,
         content_type: contentType,
@@ -146,7 +146,7 @@ function AdminPage() {
     navigate({ to: "/auth", replace: true });
   };
 
-  const urlValid = !url || Boolean(toEmbedUrl(url));
+  const urlValid = !url || isValidUrl(url);
   const canSave = title.trim() && url.trim() && urlValid && !saveFatwa.isPending;
 
   return (
@@ -156,6 +156,12 @@ function AdminPage() {
           <p className="font-script text-xl text-gold">Curator desk</p>
           <h1 className="mt-2 text-4xl">Add to the library</h1>
         </div>
+        <Link
+          to="/review"
+          className="shrink-0 rounded-md border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-gold hover:text-gold"
+        >
+          Review submissions
+        </Link>
         <Button variant="outline" size="sm" onClick={signOut} className="shrink-0">
           <LogOut className="h-4 w-4" /> Sign out
         </Button>
@@ -198,12 +204,12 @@ function AdminPage() {
             className={fieldClass}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.example.com/video/…"
+            placeholder="YouTube, TikTok, Instagram, Facebook, Vimeo…"
             required
           />
           {!urlValid && (
             <p className="text-xs text-destructive">
-              That doesn&apos;t look like a supported post or reel link.
+              Please paste a full link starting with https://
             </p>
           )}
         </div>
