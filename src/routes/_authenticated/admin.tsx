@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Loader2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureCuratorRole } from "@/lib/auth";
 import {
   categoriesQuery,
   fatawaQuery,
@@ -17,13 +18,13 @@ import {
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Add knowledge — Ulama Library" },
+      { title: "Add knowledge — Kalaam al ulama" },
       {
         name: "description",
         content:
           "Add a scholar's answer, advice, reminder, motivation, or lecture to the library.",
       },
-      { property: "og:title", content: "Add knowledge — Ulama Library" },
+      { property: "og:title", content: "Add knowledge — Kalaam al ulama" },
       {
         property: "og:description",
         content: "Add scholar-led knowledge with a category, topic, summary, and source.",
@@ -57,7 +58,7 @@ function AdminPage() {
 
   // Make sure the curator account holds the admin role before writing.
   useEffect(() => {
-    supabase.rpc("claim_admin");
+    ensureCuratorRole().catch((e: Error) => toast.error(e.message));
   }, []);
 
   const addScholar = useMutation({

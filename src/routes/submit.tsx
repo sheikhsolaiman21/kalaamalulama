@@ -10,13 +10,13 @@ import { categoriesQuery, isValidUrl } from "@/lib/fatawa";
 export const Route = createFileRoute("/submit")({
   head: () => ({
     meta: [
-      { title: "Suggest a video — Ulama Library" },
+      { title: "Suggest a video — Kalaam al ulama" },
       {
         name: "description",
         content:
           "Share a beneficial video from a trusted scholar. Every suggestion is reviewed before it joins the library.",
       },
-      { property: "og:title", content: "Suggest a video — Ulama Library" },
+      { property: "og:title", content: "Suggest a video — Kalaam al ulama" },
       {
         property: "og:description",
         content: "Send a scholar's video for review and it may be added to the public library.",

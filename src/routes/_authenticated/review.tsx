@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Check, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureCuratorRole } from "@/lib/auth";
 import {
   categoriesQuery,
   fatawaQuery,
@@ -18,9 +19,9 @@ import {
 export const Route = createFileRoute("/_authenticated/review")({
   head: () => ({
     meta: [
-      { title: "Review submissions — Ulama Library" },
+      { title: "Review submissions — Kalaam al ulama" },
       { name: "description", content: "Approve or decline videos suggested by readers." },
-      { property: "og:title", content: "Review submissions — Ulama Library" },
+      { property: "og:title", content: "Review submissions — Kalaam al ulama" },
       { property: "og:description", content: "Curator queue for reader-suggested scholar videos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -34,7 +35,7 @@ function ReviewPage() {
   const { data: pending = [], isLoading } = useQuery(pendingSubmissionsQuery);
 
   useEffect(() => {
-    supabase.rpc("claim_admin");
+    ensureCuratorRole().catch((e: Error) => toast.error(e.message));
   }, []);
 
   const approve = useMutation({

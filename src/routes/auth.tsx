@@ -4,13 +4,14 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureCuratorRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Admin sign in — Ulama Library" },
-      { name: "description", content: "Sign in to manage the Ulama Library archive." },
-      { property: "og:title", content: "Admin sign in — Ulama Library" },
+      { title: "Admin sign in — Kalaam al ulama" },
+      { name: "description", content: "Sign in to manage the Kalaam al ulama archive." },
+      { property: "og:title", content: "Admin sign in — Kalaam al ulama" },
       { property: "og:description", content: "Private access for the library curator." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -54,7 +55,7 @@ function AuthPage() {
           password,
         });
         if (error) throw error;
-        await supabase.rpc("claim_admin");
+        await ensureCuratorRole();
         toast.success("Welcome back");
         navigate({ to: "/admin", replace: true });
       }

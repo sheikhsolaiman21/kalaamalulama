@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
@@ -15,13 +15,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ulama Library — Knowledge from trusted scholars" },
+      { title: "Kalaam al ulama — Knowledge from trusted scholars" },
       {
         name: "description",
         content:
           "Explore a curated library of fatawa, advice, reminders, motivation, and lectures from trusted scholars.",
       },
-      { property: "og:title", content: "Ulama Library — Scholar-led knowledge" },
+      { property: "og:title", content: "Kalaam al ulama — Scholar-led knowledge" },
       {
         property: "og:description",
         content: "Search and filter a curated library of scholar-led answers, advice, and reminders.",
@@ -108,11 +108,9 @@ function Catalog() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
       <section className="max-w-2xl">
-        <p className="font-script text-xl text-gold">
-          Knowledge from the ulama
-        </p>
+        <p className="font-script text-xl text-gold">Words of the Ulama</p>
         <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">
-          Seek knowledge from trusted scholars.
+          Kalaam al ulama
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           Explore questions, fatawa, advice, reminders, and lectures—organized by scholar and topic
@@ -198,9 +196,15 @@ function Catalog() {
           </div>
         )}
         {!isLoading && filtered.length === 0 && !error && (
-          <p className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            No entries match your filters yet.
-          </p>
+          <div className="rounded-lg border border-dashed border-border bg-card/70 p-10 text-center">
+            <p className="font-display text-xl text-foreground">The shelves are ready.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Add your own entries from the curator desk, or invite others to suggest videos.
+            </p>
+            <Button asChild variant="outline" className="mt-6 border-gold/50 text-gold hover:bg-gold hover:text-gold-foreground">
+              <Link to="/submit">Suggest a video</Link>
+            </Button>
+          </div>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((f, i) => (
