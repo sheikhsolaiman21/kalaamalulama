@@ -15,13 +15,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ulama Library — Knowledge from trusted scholars" },
+      { title: "Kalaam al ulama — Knowledge from trusted scholars" },
       {
         name: "description",
         content:
           "Explore a curated library of fatawa, advice, reminders, motivation, and lectures from trusted scholars.",
       },
-      { property: "og:title", content: "Ulama Library — Scholar-led knowledge" },
+      { property: "og:title", content: "Kalaam al ulama — Scholar-led knowledge" },
       {
         property: "og:description",
         content: "Search and filter a curated library of scholar-led answers, advice, and reminders.",

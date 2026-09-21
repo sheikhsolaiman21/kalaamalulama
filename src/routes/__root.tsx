@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ulama Library — Scholar-led knowledge" },
+      { title: "Kalaam al ulama — Scholar-led knowledge" },
       {
         name: "description",
         content:
@@ -128,7 +128,7 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
         <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-xl">Ulama Library</span>
+          <span className="font-display text-xl">Kalaam al ulama</span>
           <span className="hidden text-xs uppercase tracking-[0.18em] text-muted-foreground sm:inline">
             Archive
           </span>
