@@ -7,3 +7,5 @@
 - [ ] Support YouTube, TikTok and other video links (embeds)
 - [ ] Public submission form + admin approval queue
 - [ ] Small look & interaction polish
+- [ ] Rename site to Kalaam al ulama with subtitle “Words of the Ulama”
+- [ ] Resolve admin role security warning
