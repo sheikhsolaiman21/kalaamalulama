@@ -130,7 +130,7 @@ function SiteHeader() {
         <Link to="/" className="flex items-baseline gap-2">
           <span className="font-display text-xl">Kalaam al ulama</span>
           <span className="hidden text-xs uppercase tracking-[0.18em] text-muted-foreground sm:inline">
-            Archive
+            Words of the Ulama
           </span>
         </Link>
         <nav className="flex items-center gap-1">
@@ -141,6 +141,13 @@ function SiteHeader() {
             activeProps={{ className: "text-foreground" }}
           >
             Catalog
+          </Link>
+          <Link
+            to="/submit"
+            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            activeProps={{ className: "text-foreground" }}
+          >
+            Submit
           </Link>
           {session ? (
             <Link
@@ -187,7 +194,7 @@ function RootComponent() {
           </main>
           <footer className="border-t border-border py-8">
             <p className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-              A curated educational archive of scholar-led knowledge. For personal rulings, always
+              Words of the Ulama — a curated educational archive of scholar-led knowledge. For personal rulings, always
               return to a qualified scholar who understands your situation.
             </p>
           </footer>
