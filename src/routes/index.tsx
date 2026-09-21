@@ -201,12 +201,9 @@ function Catalog() {
             <p className="mt-2 text-sm text-muted-foreground">
               Add your own entries from the curator desk, or invite others to suggest videos.
             </p>
-            <Link
-              to="/submit"
-              className="mt-6 inline-flex items-center justify-center rounded-md border border-gold/50 px-4 py-2 text-sm font-medium text-gold transition-colors hover:bg-gold hover:text-gold-foreground"
-            >
-              Suggest a video
-            </Link>
+            <Button asChild variant="outline" className="mt-6 border-gold/50 text-gold hover:bg-gold hover:text-gold-foreground">
+              <Link to="/submit">Suggest a video</Link>
+            </Button>
           </div>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
