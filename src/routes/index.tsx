@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
@@ -201,6 +201,12 @@ function Catalog() {
             <p className="mt-2 text-sm text-muted-foreground">
               Add your own entries from the curator desk, or invite others to suggest videos.
             </p>
+            <Link
+              to="/submit"
+              className="mt-6 inline-flex items-center justify-center rounded-md border border-gold/50 px-4 py-2 text-sm font-medium text-gold transition-colors hover:bg-gold hover:text-gold-foreground"
+            >
+              Suggest a video
+            </Link>
           </div>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
